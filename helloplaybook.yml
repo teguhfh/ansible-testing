@@ -1,0 +1,23 @@
+---
+- name: Add a host to Ansible Controller
+  hosts: localhost
+  connection: local
+  collections:
+    - infra.controller_configuration
+  tasks:
+    - name: Create or update a host in the controller inventory
+      include_role:
+        name: controller_hosts
+      vars:
+        controller_hostname: "https://aap4.tgh.lab/"
+        controller_username: "admin"
+        controller_password: "admin"
+        # It is more secure to use the credential created in AAP for the username and password/token.
+        controller_hosts:
+          - name: "my-new-server.example.com"
+            description: "Web Server"
+            inventory: "Default"
+            variables:
+              ansible_user: "ec2-user"
+              some_custom_variable: "value"
+
