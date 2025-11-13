@@ -7,5 +7,5 @@ collections:
     source: https://aap4.tgh.lab/api/galaxy/content/rh-certified/
   - name: ansible.posix
     source: https://aap4.tgh.lab/api/galaxy/content/rh-certified/
-    version: '>=4.5.0,<4.6.0'
+
   # - name: infra.controller_configuration
