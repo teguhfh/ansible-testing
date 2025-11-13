@@ -1,23 +1,49 @@
----
-- name: Add a host to Ansible Controller
-  hosts: localhost
-  connection: local
-  collections:
-    - infra.controller_configuration
+- name: Zookeeper Parallel Provisioning
+  hosts: zookeeper_parallel
+  gather_facts: false
+  tags: zookeeper
+  environment: "{{ proxy_env }}"
   tasks:
-    - name: Create or update a host in the controller inventory
-      include_role:
-        name: controller_hosts
-      vars:
-        controller_hostname: "https://aap4.tgh.lab/"
-        controller_username: "admin"
-        controller_password: "admin"
-        # It is more secure to use the credential created in AAP for the username and password/token.
-        controller_hosts:
-          - name: "my-new-server.example.com"
-            description: "Web Server"
-            inventory: "Default"
-            variables:
-              ansible_user: "ec2-user"
-              some_custom_variable: "value"
+    - import_role:
+        name: zookeeper
 
+- name: Zookeeper Serial Ordering
+  hosts: zookeeper_serial
+  gather_facts: false
+  tags: zookeeper
+  environment: "{{ proxy_env }}"
+  tasks:
+    - import_role:
+        name: zookeeper
+        tasks_from: dynamic_groups.yml
+
+- name: Zookeeper Followers Provisioning
+  hosts: zookeeper_follower
+  serial: 1
+  any_errors_fatal: true
+  gather_facts: false
+  tags: zookeeper
+  environment: "{{ proxy_env }}"
+  tasks:
+    - import_role:
+        name: zookeeper
+
+    - name: Proceed Prompt
+      pause:
+        prompt: "Press Enter to Proceed to Next Node. Ctrl + C to Abort"
+      when: zookeeper_pause_rolling_deployment|bool
+
+- name: Zookeeper Leader Provisioning
+  hosts: zookeeper_leader
+  any_errors_fatal: true
+  gather_facts: false
+  tags: zookeeper
+  environment: "{{ proxy_env }}"
+  tasks:
+    - import_role:
+        name: zookeeper
+
+    - name: Proceed Prompt
+      pause:
+        prompt: "Press Enter to Proceed to Next Node. Ctrl + C to Abort"
+      when: zookeeper_pause_rolling_deployment|bool
