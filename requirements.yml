@@ -2,6 +2,6 @@
 collections:
   # - name: awx.awx
   # or
-  - name: ansible.controller
+  - name: confluent.platform
     # version: '>=4.5.0,<4.6.0'
-  - name: infra.controller_configuration
+  # - name: infra.controller_configuration
