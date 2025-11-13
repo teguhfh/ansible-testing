@@ -3,5 +3,5 @@ collections:
   # - name: awx.awx
   # or
   - name: ansible.controller
-    version: '>=4.5.0,<4.6.0'
+    # version: '>=4.5.0,<4.6.0'
   - name: infra.controller_configuration
